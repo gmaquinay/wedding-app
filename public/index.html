@@ -1,0 +1,307 @@
+<!doctype html>
+<html>
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/png" href="images/favicon.png" />
+  <title>Elo & Guigui - 27 Juillet 2019</title>
+  <link rel="stylesheet" href="./libs/bootstrap-3.1.1/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="./css/input_range.css">
+  <link rel="stylesheet" href="./css/app.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+    integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+  <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script>
+
+    var access_token = null;
+    var refresh_token = null;
+    var localdb = null;
+
+    window.onload = function () {
+      function getHashParams() {
+        var hashParams = {};
+        var e, r = /([^&;=]+)=?([^&;]*)/g,
+          q = window.location.hash.substring(1);
+        while (e = r.exec(q)) {
+          hashParams[e[1]] = decodeURIComponent(e[2]);
+        }
+        return hashParams;
+      }
+      var params = getHashParams();
+      access_token = params.access_token;
+      refresh_token = params.refresh_token;
+      var error = params.error;
+      if (error) {
+        alert('There was an error during the authentication');
+      } else {
+        if (access_token) {
+          fetchdb();
+          $('#mainpage').show();
+          $('#loginform').hide();
+          refresh();
+        } else {
+          $('#mainpage').hide();
+          $('#loginform').show();
+        }
+      }
+    }
+
+    function fetchdb() {
+      $.ajax({
+        type: 'GET',
+        url: '/playlist/playlist.json',
+        dataType: "json",
+        success: function (data) {
+          localdb = data;
+        }
+      });
+    }
+
+    function refreshToken() {
+      $.ajax({
+        url: '/refresh_token',
+        data: {
+          'refresh_token': refresh_token
+        }
+      }).done(function (data) {
+        access_token = data.access_token;
+      });
+    }
+    //-----------------------------------
+
+
+    //access_currentToken = null;
+
+    ///////////////////////////////
+    var prefix = "https://api.spotify.com/v1/me";
+    var playlistUrl = null;
+    var currentTrackUri = null;
+
+    function sp_request(method, command, rdata = null, callback = null, myurl = null) {
+      $.ajax({
+        type: method,
+        url: (myurl != null) ? myurl : prefix + command,
+        headers: {
+          'Authorization': 'Bearer ' + access_token,
+        },
+        data: rdata,
+        success: callback,
+        statusCode: {
+          401: function (response) {
+            console.log('renew token');
+            refreshToken();
+          },
+          204: function (response) {
+            console.log("ignore 204");
+          }
+        }
+      });
+    }
+
+    var refreshIndex = 0;
+    var senders = [];
+
+    function refresh(singleshot = false) {
+      sp_request("GET", "/player", null, function (msg) {
+        if (msg) {
+          if (msg.is_playing == true) {
+            if (currentTrackUri != msg.item.uri) {
+
+              // First time this track is displayed
+              refreshIndex = 0;
+
+              currentTrackUri = msg.item.uri;
+              var foundInLocalDb = localdb['tracks'].hasOwnProperty(currentTrackUri);
+              var entry = null;
+              if (foundInLocalDb) {
+                entry = localdb['tracks'][currentTrackUri]
+              }
+              // Update track artist and name and uri
+              $("#artist").html(msg.item.artists[0].name);
+              $("#track").html(msg.item.name);
+              $("#uri").html(currentTrackUri);
+              // Update track artwork
+              var currentPoster = $('#poster').attr('src');
+              var newPoster = "/images/unknowntrack.png";
+              if (msg.item.album.images[0] !== undefined) {
+                newPoster = msg.item.album.images[0].url;
+              } else if (foundInLocalDb) {
+                newPoster = "/playlist/artwork/" + entry.artwork;
+              }
+              if (currentPoster != newPoster) {
+                setTimeout(() => {
+                  $("#poster").fadeOut(500, function () {
+                    $('#poster').attr('src', newPoster).fadeIn(500);
+                  });
+                }, 0);
+              }
+              // Update track length
+              document.getElementById('slider').max = msg.item.duration_ms;
+              // Update pictures of people who sent this track
+              if (foundInLocalDb && entry.hasOwnProperty("proposedBy")) {
+                senders = entry.proposedBy;
+              } else {
+                senders = null;
+                $('#sentby').attr('src', "/images/unknownpeople.png");
+                $('#alsosentby').css('visibility',"hidden");
+                $('#sentbyname').html("??");
+              }
+            }
+            // Always update progress
+            document.getElementById('slider').value = msg.progress_ms;
+
+            // Update senders images every 5 seconds
+            if (senders !== null)
+            {
+              if ((refreshIndex % 5) == 0)
+              {
+                loadSenders((refreshIndex/5) % senders.length);
+              }
+            }
+
+            refreshIndex++;
+
+          } else {
+            loadPlaylist();
+          }
+        }
+      });
+      if (!singleshot)
+        setTimeout(refresh, 1000);
+    }
+
+    function loadSenders(startOffset)
+    {
+      var alsosentby = $('#alsosentby');
+      var divs = [];
+      divs.push($('#sentby'));
+      divs.push(alsosentby);
+      var users = [];
+      users.push(senders[startOffset]);
+      if (senders.length > 1) {
+        users.push(senders[(startOffset+1)%2]);
+      } else {
+        $('#alsosentby').css('visibility',"hidden");
+      }
+      index = 0;
+      console.log(divs);
+      console.log(users);
+      users.forEach(userid => {
+        currentImage = divs[index].attr('src');
+        var newImage = "/images/unknownpeople.png";
+        var newName = "??";
+        if (localdb['people'].hasOwnProperty(userid)) {
+          newImage = "/playlist/people/" + localdb['people'][userid].image;
+          newName = localdb['people'][userid].nickname;
+        }
+        if (currentImage != newImage) {
+          var imgdiv = divs[index];
+          var imgsrc = newImage;
+          setTimeout(() => {
+                  imgdiv.fadeOut(500, function () {
+                    if ((imgdiv === alsosentby) && ($('#alsosentby').css('visibility') != "visible")) {
+                      $('#alsosentby').css('visibility',"visible");
+                    }
+                    imgdiv.attr('src', imgsrc).fadeIn(500);
+                    if (imgdiv !== alsosentby) {
+                      $('#sentbyname').html(newName).fadeIn(500);
+                    }
+                  });
+                }, 0);
+        }
+        index++;
+      });
+    }
+    
+    function refresh_once() {
+      refresh(true);
+    }
+
+    function next() {
+      console.log("Next");
+      sp_request("POST", "/player/next");
+    }
+    function prev() {
+      console.log("Prev");
+      sp_request("POST", "/player/previous");
+    }
+    function pause() {
+      console.log("Pause");
+      sp_request("PUT", "/player/pause");
+    }
+    function play(context_uri = null) {
+      console.log("Play " + context_uri);
+      var data = null;
+      if (context_uri != null) {
+        data = '{"context_uri": "' + context_uri + '","offset": {"position": 0},"position_ms": 0}';
+      }
+      console.log(data);
+      sp_request("PUT", "/player/play", data);
+    }
+    function loadPlaylist() {
+      sp_request("GET", "/playlists", null, function (msg) {
+        for (index in msg.items) {
+          if (msg.items[index]['name'] == "Wedding") {
+            console.log(msg.items[index]['uri']);
+            play(msg.items[index]['uri']);
+            playlistUrl = msg.items[index]['tracks']['href'];
+            setTimeout(function () {
+              sp_request("GET", null, null, function (msg) {
+                console.log(msg);
+              }, playlistUrl);
+            }, 0);
+          }
+        }
+      });
+    }
+    function seekto() {
+      console.log("Seek");
+      sp_request("PUT", "/player/seek?position_ms=" + document.getElementById('slider').value, null, refresh_once);
+    }
+  </script>
+</head>
+<body>
+  <div class='toplevel'>
+    <div id='loginform' class="container-fluid vcentered">
+      <div id="login" style="text-align: center">
+        <h1>
+          <font color=white>Bienvenue sur la playlist de mariage ;)<br> Connecte-toi, après, tu te permets!</font>
+        </h1>
+        <center><a href="/login" class="btn btn-primary">Se connecter</a></center>
+      </div>
+    </div>
+
+    <div id='mainpage' class='container fullscreen vcentered'>
+      <div class="row height-80-percent">
+        <div class="poster col-sm-6"><img id="poster" class="imgfullspace" src="images/unknowntrack.png"></div>
+        <div class="poster col-sm-6">
+          <img id="sentby" class="imgfullspace" src="images/unknownpeople.png">
+          <div class="sentbyname" id="sentbyname"></div>
+          <img id="alsosentby" class="imgoverlay" style="visibility:hidden" src="images/unknownpeople.png">
+        </div>
+      </div>
+      <div class="row col-centered">
+        <input id='slider' type="range" min="0" max="250" step="250" class="e-range" onmouseup="seekto()">
+      </div>
+      <div class="row" style="text-align:center">
+        <div class="col-sm-1">
+          <a onclick="prev()"><i class="fas fa-chevron-left fa-5x"></i></a>
+        </div>
+        <div class="col-lg-10">
+          <div id="artist"></div>
+          <font size=6>&nbsp;&bull;&nbsp;</font>
+          <div id="track"></div>
+        </div>
+        <div class="col-sm-1">
+          <a onclick="next()"><i class="fas fa-chevron-right fa-5x"></i></a>
+        </div>
+      </div>
+      <div class="row" style="text-align:center;visibility: hidden">
+        <div id="uri"></div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>
