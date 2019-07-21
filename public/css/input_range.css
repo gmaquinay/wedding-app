@@ -8,6 +8,7 @@
   height: 30px;
   overflow: hidden;
   cursor: pointer;
+  background-color:transparent;
 }
 .e-range:focus {
   outline: none;

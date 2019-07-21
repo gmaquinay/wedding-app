@@ -17,6 +17,16 @@
     var access_token = null;
     var refresh_token = null;
     var localdb = null;
+    ///////////////////////////////
+    var prefix = "https://api.spotify.com/v1/me";
+    var playlistUrl = null;
+    var currentTrackUri = null;
+    var refreshIndex = 0;
+    var senders = [];
+    var refreshPlaybackTimeout_ms = 2000; // 2 seconds
+    var refreshTokenTimeout_ms = 600000;  // 10 minutes
+    var refreshPictureRate = 2;  // Every 2 x <refreshPlaybackTimeout_ms>
+
 
     window.onload = function () {
       function getHashParams() {
@@ -36,6 +46,7 @@
         alert('There was an error during the authentication');
       } else {
         if (access_token) {
+          setTimeout(refreshToken, refreshTokenTimeout_ms);
           fetchdb();
           $('#mainpage').show();
           $('#loginform').hide();
@@ -66,17 +77,10 @@
         }
       }).done(function (data) {
         access_token = data.access_token;
+        setTimeout(refreshToken, refreshTokenTimeout_ms);
       });
     }
     //-----------------------------------
-
-
-    //access_currentToken = null;
-
-    ///////////////////////////////
-    var prefix = "https://api.spotify.com/v1/me";
-    var playlistUrl = null;
-    var currentTrackUri = null;
 
     function sp_request(method, command, rdata = null, callback = null, myurl = null) {
       $.ajax({
@@ -95,12 +99,12 @@
           204: function (response) {
             console.log("ignore 204");
           }
+//          *: function(response) {
+//            console.log("error");
+//          }
         }
       });
     }
-
-    var refreshIndex = 0;
-    var senders = [];
 
     function refresh(singleshot = false) {
       sp_request("GET", "/player", null, function (msg) {
@@ -154,9 +158,9 @@
             // Update senders images every 5 seconds
             if (senders !== null)
             {
-              if ((refreshIndex % 5) == 0)
+              if ((refreshIndex % refreshPictureRate) == 0)
               {
-                loadSenders((refreshIndex/5) % senders.length);
+                loadSenders((refreshIndex/refreshPictureRate) % senders.length);
               }
             }
 
@@ -168,15 +172,18 @@
         }
       });
       if (!singleshot)
-        setTimeout(refresh, 1000);
+        setTimeout(refresh, refreshPlaybackTimeout_ms);
     }
 
     function loadSenders(startOffset)
     {
+      var sentby = $('#sentby');
       var alsosentby = $('#alsosentby');
+      // Fill array of divs
       var divs = [];
-      divs.push($('#sentby'));
+      divs.push(sentby);
       divs.push(alsosentby);
+      // Fill array of users
       var users = [];
       users.push(senders[startOffset]);
       if (senders.length > 1) {
@@ -184,9 +191,9 @@
       } else {
         $('#alsosentby').css('visibility',"hidden");
       }
+
       index = 0;
-      console.log(divs);
-      console.log(users);
+
       users.forEach(userid => {
         currentImage = divs[index].attr('src');
         var newImage = "/images/unknownpeople.png";
@@ -198,17 +205,21 @@
         if (currentImage != newImage) {
           var imgdiv = divs[index];
           var imgsrc = newImage;
+          // Display sender name (only for sentby div, other sender name would be too small)
+          if (imgdiv === sentby) {
+            setTimeout(() => {$('#sentbyname').fadeOut(500, function() { $(this).text(newName).fadeIn(500);})} ,0);
+          }
+          // Display sender image
           setTimeout(() => {
-                  imgdiv.fadeOut(500, function () {
-                    if ((imgdiv === alsosentby) && ($('#alsosentby').css('visibility') != "visible")) {
-                      $('#alsosentby').css('visibility',"visible");
-                    }
-                    imgdiv.attr('src', imgsrc).fadeIn(500);
-                    if (imgdiv !== alsosentby) {
-                      $('#sentbyname').html(newName).fadeIn(500);
-                    }
-                  });
-                }, 0);
+            imgdiv.fadeOut(500, function () {
+              // Make sure div is visible in case that's the secondary sender div
+              if ((imgdiv === alsosentby) && ($('#alsosentby').css('visibility') != "visible")) {
+                $('#alsosentby').css('visibility',"visible");
+              }
+              // Update image
+              imgdiv.attr('src', imgsrc).fadeIn(500);
+             });
+           }, 0);
         }
         index++;
       });
@@ -271,7 +282,6 @@
         <center><a href="/login" class="btn btn-primary">Se connecter</a></center>
       </div>
     </div>
-
     <div id='mainpage' class='container fullscreen vcentered'>
       <div class="row height-80-percent">
         <div class="poster col-sm-6"><img id="poster" class="imgfullspace" src="images/unknowntrack.png"></div>
@@ -297,7 +307,7 @@
           <a onclick="next()"><i class="fas fa-chevron-right fa-5x"></i></a>
         </div>
       </div>
-      <div class="row" style="text-align:center;visibility: hidden">
+      <div class="row" style="text-align:center;visibility: visible">
         <div id="uri"></div>
       </div>
     </div>
