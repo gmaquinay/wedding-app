@@ -26,7 +26,7 @@
     var refreshPlaybackTimeout_ms = 2000; // 2 seconds
     var refreshTokenTimeout_ms = 600000;  // 10 minutes
     var refreshPictureRate = 2;  // Every 2 x <refreshPlaybackTimeout_ms>
-
+    var maxNbSenders = 4;
 
     window.onload = function () {
       function getHashParams() {
@@ -148,8 +148,10 @@
               } else {
                 senders = null;
                 $('#sentby').attr('src', "/images/unknownpeople.png");
-                $('#alsosentby').css('visibility',"hidden");
                 $('#sentbyname').html("??");
+                for (i = 1; i < maxNbSenders; i++) {
+                  $('#alsosentby' + i).css('visibility',"hidden");
+                }
               }
             }
             // Always update progress
@@ -160,6 +162,7 @@
             {
               if ((refreshIndex % refreshPictureRate) == 0)
               {
+console.log("Index = " + refreshIndex + " sender.length =" + senders.length + " => startOffset=" + (refreshIndex/refreshPictureRate) % senders.length);
                 loadSenders((refreshIndex/refreshPictureRate) % senders.length);
               }
             }
@@ -178,18 +181,24 @@
     function loadSenders(startOffset)
     {
       var sentby = $('#sentby');
-      var alsosentby = $('#alsosentby');
+      var sentbyname = $('#sentbyname');
+
       // Fill array of divs
       var divs = [];
       divs.push(sentby);
-      divs.push(alsosentby);
+      for (i = 1; i < maxNbSenders; i++) {
+        divs.push($('#alsosentby' + i));
+      }
       // Fill array of users
+console.log(divs);
       var users = [];
-      users.push(senders[startOffset]);
-      if (senders.length > 1) {
-        users.push(senders[(startOffset+1)%2]);
-      } else {
-        $('#alsosentby').css('visibility',"hidden");
+      for (i = 0; i < senders.length; i++) {
+        console.log("i=inserting user " + (i+startOffset)%senders.length + " --- " + senders[(i+startOffset)%senders.length]);
+        users.push(senders[(i+startOffset)%senders.length]);
+      }
+      // Hide as many unused users widgets as necessary
+      for (i = users.length; i <= maxNbSenders; i++) {
+        $('#alsosentby'+i).css('visibility',"hidden");
       }
 
       index = 0;
@@ -213,8 +222,8 @@
           setTimeout(() => {
             imgdiv.fadeOut(500, function () {
               // Make sure div is visible in case that's the secondary sender div
-              if ((imgdiv === alsosentby) && ($('#alsosentby').css('visibility') != "visible")) {
-                $('#alsosentby').css('visibility',"visible");
+              if ((imgdiv !== sentby) && (imgdiv.css('visibility') != "visible")) {
+                imgdiv.css('visibility',"visible");
               }
               // Update image
               imgdiv.attr('src', imgsrc).fadeIn(500);
@@ -288,7 +297,9 @@
         <div class="poster col-sm-6">
           <img id="sentby" class="imgfullspace" src="images/unknownpeople.png">
           <div class="sentbyname" id="sentbyname"></div>
-          <img id="alsosentby" class="imgoverlay" style="visibility:hidden" src="images/unknownpeople.png">
+          <img id="alsosentby1" class="imgoverlay imgpos1" style="visibility:hidden" src="images/unknownpeople.png">
+          <img id="alsosentby2" class="imgoverlay imgpos2" style="visibility:hidden" src="images/unknownpeople.png">
+          <img id="alsosentby3" class="imgoverlay imgpos3" style="visibility:hidden" src="images/unknownpeople.png">
         </div>
       </div>
       <div class="row col-centered">

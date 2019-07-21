@@ -68,8 +68,22 @@ body {
     width:70px;
     height: 70px;
     position:absolute;
+}
+.imgpos1 {
     right:20px;
     top:0px;
+}
+.imgpos2 {
+    right:20px;
+    top:80px;
+}
+.imgpos3 {
+    right:20px;
+    top:160px;
+}
+.imgpos4 {
+    right:20px;
+    top:240px;
 }
 
 .col-centered{
