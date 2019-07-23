@@ -134,10 +134,13 @@
                 newPoster = "/playlist/artwork/" + entry.artwork;
               }
               if (currentPoster != newPoster) {
+                posterdiv = $("#poster");
                 setTimeout(() => {
-                  $("#poster").fadeOut(500, function () {
-                    $('#poster').attr('src', newPoster).fadeIn(500);
-                  });
+                  posterdiv.fadeOut(500, function () {
+                    posterdiv.attr('src', newPoster).load(function() { 
+                      posterdiv.fadeIn(500);
+                    })
+                  })
                 }, 0);
               }
               // Update track length
@@ -162,7 +165,6 @@
             {
               if ((refreshIndex % refreshPictureRate) == 0)
               {
-console.log("Index = " + refreshIndex + " sender.length =" + senders.length + " => startOffset=" + (refreshIndex/refreshPictureRate) % senders.length);
                 loadSenders((refreshIndex/refreshPictureRate) % senders.length);
               }
             }
@@ -172,6 +174,9 @@ console.log("Index = " + refreshIndex + " sender.length =" + senders.length + " 
           } else {
             loadPlaylist();
           }
+        }
+        else {
+          console.log("No Internet connection");
         }
       });
       if (!singleshot)
@@ -190,10 +195,8 @@ console.log("Index = " + refreshIndex + " sender.length =" + senders.length + " 
         divs.push($('#alsosentby' + i));
       }
       // Fill array of users
-console.log(divs);
       var users = [];
       for (i = 0; i < senders.length; i++) {
-        console.log("i=inserting user " + (i+startOffset)%senders.length + " --- " + senders[(i+startOffset)%senders.length]);
         users.push(senders[(i+startOffset)%senders.length]);
       }
       // Hide as many unused users widgets as necessary
@@ -318,7 +321,7 @@ console.log(divs);
           <a onclick="next()"><i class="fas fa-chevron-right fa-5x"></i></a>
         </div>
       </div>
-      <div class="row" style="text-align:center;visibility: visible">
+      <div class="row" style="text-align:center;visibility:hidden">
         <div id="uri"></div>
       </div>
     </div>
