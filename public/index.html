@@ -121,6 +121,10 @@
               if (foundInLocalDb) {
                 entry = localdb['tracks'][currentTrackUri]
               }
+              // Seekto if needed
+              if (foundInLocalDb && entry.hasOwnProperty("offset") && msg.progress_ms < entry.offset) {
+                setTimeout('seekto('+entry.offset+')', 0);
+              }
               // Update track artist and name and uri
               $("#artist").html(msg.item.artists[0].name);
               $("#track").html(msg.item.name);
@@ -278,9 +282,14 @@
         }
       });
     }
-    function seekto() {
+    function seekto(pos) {
       console.log("Seek");
-      sp_request("PUT", "/player/seek?position_ms=" + document.getElementById('slider').value, null, refresh_once);
+      var position = pos;
+      if (position == null)
+      {
+        position = document.getElementById('slider').value;
+      }
+      sp_request("PUT", "/player/seek?position_ms=" + position, null, refresh_once);
     }
   </script>
 </head>
