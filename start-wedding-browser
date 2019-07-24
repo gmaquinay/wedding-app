@@ -1,0 +1,13 @@
+while true; do
+  # Wait for Internet to be reachable
+  if ping -w1 -c1 google.fr ; then
+    echo "Internet is OK"
+    if nc -z localhost 8888; then
+      echo "Local server is ready"
+      break
+    fi
+  fi
+  sleep 1 
+done
+
+exec /usr/bin/chromium-browser --disable-session-crashed-bubble --start-maximized --kiosk http://localhost:8888/

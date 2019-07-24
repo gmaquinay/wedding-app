@@ -1,12 +1,15 @@
 # wedding-app
-Call
+
+Make sure you have nodejs and npm installed. Then, call:
 ```
+npm i
 ./start-weddingapp
 ```
-Then browse to http://localhost:8888 and connect using your your spotify credential.
+And browse to http://localhost:8888 and connect using your your spotify credential.
 
-Then, simply update the file public/playlist/playlist.json to link spotify tracks to the buddies who proposed these tracks ...
+To make magic happen, simply update the file public/playlist/playlist.json to link spotify tracks to the buddies who proposed these tracks ...
 This is a stupid UI made for a wedding where we asked all guests to propose 10 tracks they really like.
+
 playlist.json looks like:
 ```
 {
@@ -27,5 +30,19 @@ playlist.json looks like:
 }
 
 ```
+
+Last but not the least, if you want to make it default app on a rapsberry pi,
+install the following packages,
+```
+sudo apt install ttf-mscorefonts-installer unclutter x11-xserver-utils
+```
+and add the following lines to the file .config/lxsession/LXDE-pi/autostart
+```
+@/home/pi/wedding-app/start-wedding-browser
+@xset s off
+@xset s noblank
+@xset -dpms
+```
+
 
 Hope it could help somebody some day... ;)
