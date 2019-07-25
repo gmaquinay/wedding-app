@@ -209,7 +209,7 @@
     "spotify:track:3ydfhgIZIc2j39NLIhpJpq" : {"proposedBy":["22"]},
     "spotify:track:7BfSU2ya7PZtqrl48urKqG" : {"proposedBy":["22"]},
     "spotify:track:4BmWbWeiHVAv6lMabQTn3Y" : {"proposedBy":["22"]},
-    "spotify:track:4DX82Vc8qAH4jJPvKxvwg6" : {"proposedBy":["22"]},
+    "spotify:track:4DX82Vc8qAH4jJPvKxvwg6" : {"proposedBy":["22","27"]},
     "spotify:track:04KTF78FFg8sOHC1BADqbY" : {"proposedBy":["22"]},
     "spotify:track:4f4eThkss7iSzZyyj0e8vj" : {"proposedBy":["22"]},
     "spotify:track:3tlRGvVZWleW4ZNncqVNI9" : {"proposedBy":["22"]},
@@ -341,6 +341,15 @@
     "spotify:track:31qgVdvSqTQ7unwQQngycB" : {"proposedBy":["35"]},
     "spotify:track:1jqLJBQwo7yBCqYQWukLkq" : {"proposedBy":["35"]},
     "spotify:track:623rRTKwGmgjH6sjE9uWLh" : {"proposedBy":["35"]},
-    "spotify:track:3u5N55tHf7hXATSQrjBh2q" : {"proposedBy":["35"]}
+    "spotify:track:3u5N55tHf7hXATSQrjBh2q" : {"proposedBy":["35"]},
+    "spotify:track:5tJjo5JDF9zhzYD7yQfATH" : {"proposedBy":["27"]},
+    "spotify:track:6LQk4O4M6BSpKlyoI89NjZ" : {"proposedBy":["27"]},
+    "spotify:track:18YsAFjq7HKksL9qufSX0m" : {"proposedBy":["27"]},
+    "spotify:track:30WnQsvwFeYEd9k08vV7Dl" : {"proposedBy":["27"]},
+    "spotify:track:4MgZKdYUr4qb79wn1Ke5kx" : {"proposedBy":["27"]},
+    "spotify:track:1WSwO430vHpJyjvdEXgofU" : {"proposedBy":["27"]},
+    "spotify:track:6dZKWYSx5YBIme4SfpIHJ0" : {"proposedBy":["27"]},
+    "spotify:track:3migOg6WLgzss11IZKi7V0" : {"proposedBy":["27"]},
+    "spotify:track:2TQn4MhMOcdDY7UpriyR81" : {"proposedBy":["27"]}
   }
 }
