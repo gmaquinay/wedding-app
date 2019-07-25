@@ -10,4 +10,6 @@ while true; do
   sleep 1 
 done
 
-exec /usr/bin/chromium-browser --disable-session-crashed-bubble --start-maximized --kiosk http://localhost:8888/
+sed -i 's/"exit_type":"Crashed"/"exit_type":"none"/' /home/pi/.config/chromium/Default/Preferences
+
+exec /usr/bin/chromium-browser --start-maximized --kiosk http://localhost:8888/
