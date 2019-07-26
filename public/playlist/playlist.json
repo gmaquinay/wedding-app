@@ -34,7 +34,8 @@
     "32": {"nickname":"Ket'",         "image":"ket.jpg"},
     "33": {"nickname":"Brice","image":"brice.jpg"},
     "34": {"nickname":"Marine","image":"marine.jpg"},
-    "35": {"nickname":"Jenny","image":"jenny.jpg"}
+    "35": {"nickname":"Jenny","image":"jenny.jpg"},
+    "36": {"nickname":"Aurelie","image":"lili.jpg"}
   },
   "tracks" : {
     "spotify:local:Gilles+Gabriel::Love+et+Cie:130" : {"proposedBy":["5"],     "dancefloor": "false", "artwork":"gilles-gabriel-love-et-cie.jpg" },
@@ -350,6 +351,9 @@
     "spotify:track:1WSwO430vHpJyjvdEXgofU" : {"proposedBy":["27"]},
     "spotify:track:6dZKWYSx5YBIme4SfpIHJ0" : {"proposedBy":["27"]},
     "spotify:track:3migOg6WLgzss11IZKi7V0" : {"proposedBy":["27"]},
-    "spotify:track:2TQn4MhMOcdDY7UpriyR81" : {"proposedBy":["27"]}
+    "spotify:track:2TQn4MhMOcdDY7UpriyR81" : {"proposedBy":["27"]},
+    "spotify:track:2yAVzRiEQooPEJ9SYx11L3" : {"proposedBy":["36"]},
+    "spotify:track:5ZrDlcxIDZyjOzHdYW1ydr" : {"proposedBy":["36"]},
+    "spotify:track:5HeGmiQxjJwMDsB0AvICA2" : {"proposedBy":["27"]}
   }
 }
