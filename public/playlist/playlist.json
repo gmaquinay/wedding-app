@@ -35,7 +35,8 @@
     "33": {"nickname":"Brice","image":"brice.jpg"},
     "34": {"nickname":"Marine","image":"marine.jpg"},
     "35": {"nickname":"Jenny","image":"jenny.jpg"},
-    "36": {"nickname":"Aurelie","image":"lili.jpg"}
+    "36": {"nickname":"Aurelie","image":"lili.jpg"},
+    "37": {"nickname":"Zabeth & Patrick","image":"zabeth.jpg"}
   },
   "tracks" : {
     "spotify:local:Gilles+Gabriel::Love+et+Cie:130" : {"proposedBy":["5"],     "dancefloor": "false", "artwork":"gilles-gabriel-love-et-cie.jpg" },
@@ -81,7 +82,7 @@
     "spotify:track:6GgqC6WTghW6ZchlnK0sqI"          : {"proposedBy":["2"]},
     "spotify:track:2tyqRoh5GvjapC6kodk0D5"          : {"proposedBy":["1","26","2"]},
     "spotify:track:5T8EDUDqKcs6OSOwEsfqG7"          : {"proposedBy":["2"]},
-    "spotify:track:4u7EnebtmKWzUH433cf5Qv"          : {"proposedBy":["1","2","28","32"]},
+    "spotify:track:4u7EnebtmKWzUH433cf5Qv"          : {"proposedBy":["1","2","28","32","37"]},
     "spotify:track:0F3fscqwFqD52Tpbep5hBW"          : {"proposedBy":["3"]},
     "spotify:track:5JdLUE9D743ob2RtgmVpVx"          : {"proposedBy":["3"]},
     "spotify:track:3OtMnyUaiipcAT23A8liyi"          : {"proposedBy":["3"]},
@@ -354,6 +355,15 @@
     "spotify:track:2TQn4MhMOcdDY7UpriyR81" : {"proposedBy":["27"]},
     "spotify:track:2yAVzRiEQooPEJ9SYx11L3" : {"proposedBy":["36"]},
     "spotify:track:5ZrDlcxIDZyjOzHdYW1ydr" : {"proposedBy":["36"]},
-    "spotify:track:5HeGmiQxjJwMDsB0AvICA2" : {"proposedBy":["27"]}
+    "spotify:track:5HeGmiQxjJwMDsB0AvICA2" : {"proposedBy":["27"]},
+    "spotify:track:2sxEZAXXUG0eTFZpsCDKR6" : {"proposedBy":["37"]},
+    "spotify:track:5l36mPDpqNWrNIRzwJpwYl" : {"proposedBy":["37"]},
+    "spotify:track:4uOKFydzAejjSFqYbv1XPt" : {"proposedBy":["37"]},
+    "spotify:track:1lCRw5FEZ1gPDNPzy1K4zW" : {"proposedBy":["37"]},
+    "spotify:track:2nVHqZbOGkKWzlcy1aMbE7" : {"proposedBy":["37"]},
+    "spotify:track:1VsGYaCBFjCVudtX9IGqDg" : {"proposedBy":["37"]},
+    "spotify:track:4beWEVoUbjSziAFPy8voaF" : {"proposedBy":["37"]},
+    "spotify:track:10Nmj3JCNoMeBQ87uw5j8k" : {"proposedBy":["37"]},
+    "spotify:track:37oEm1l0NL6Ud2ccgsdgND" : {"proposedBy":["37"]}
   }
 }
